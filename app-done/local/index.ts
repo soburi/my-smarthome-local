@@ -79,15 +79,12 @@ class LocalExecutionApp {
       const params = execution.params as IWasherParams;
       const payload = this.getDataForCommand(execution.command, params);
 
-      // Create a command to send over the local network
-      const radioCommand = new DataFlow.HttpRequestData();
+      const radioCommand = new DataFlow.UdpRequestData();
       radioCommand.requestId = request.requestId;
       radioCommand.deviceId = device.id;
-      radioCommand.data = JSON.stringify(payload);
-      radioCommand.dataType = 'application/json';
-      radioCommand.port = SERVER_PORT;
-      radioCommand.method = Constants.HttpOperation.POST;
-      radioCommand.isSecure = false;
+      radioCommand.data = Buffer.from(JSON.stringify(command.execution[0].params)).toString('hex');
+      radioCommand.port = 9412;
+      console.debug("UdpRequestData:", radioCommand);
 
       console.log("Sending HTTP request to the smart home device:", payload);
 
